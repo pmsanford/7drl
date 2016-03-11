@@ -19,8 +19,6 @@ var Game = {
 
 				this.scheduler = new ROT.Scheduler.Speed();
 				this.engine = new ROT.Engine(this.scheduler);
-				//this.display = new ROT.Display({fontSize:16});
-				//document.body.appendChild(this.display.getContainer());
 				new Spritesheet('alloy.png', 12, 12, this.finalizeLoad.bind(this));
 			break;
 		}
@@ -62,7 +60,6 @@ var Game = {
 		var size = this.level.getSize();
 
 		var bufferSize = 3;
-		//this.display.setOptions({width:size.x, height:size.y + bufferSize});
 		this.textBuffer.configure({
 			display: PixiDisplay,
 			position: new XY(0, size.y),
