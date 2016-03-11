@@ -26,8 +26,8 @@ var Game = {
 	
 	finalizeLoad: function(sheet) {
 	  this.sheet = sheet;
-		PixiDisplay.init(document.body, this.sheet);
-		this.textBuffer = new TextBuffer(PixiDisplay);
+		this.pdisplay = new PixiDisplay(document.body, this.sheet);
+		this.textBuffer = new TextBuffer(this.pdisplay);
 		this.player = new Player();
 
 		/* FIXME build a level and position a player */
@@ -43,8 +43,8 @@ var Game = {
 		var entity = this.level.getEntityAt(xy);
 		var visual = entity.getVisual();
 		//this.display.draw(xy.x, xy.y, visual.ch, visual.fg, visual.bg);
-		PixiDisplay.set(xy.x, xy.y, visual.ch, visual.fg, visual.bg);
-		PixiDisplay.draw();
+		this.pdisplay.set(xy.x, xy.y, visual.ch, visual.fg, visual.bg);
+		this.pdisplay.draw();
 	},
 	
 	over: function() {
@@ -61,7 +61,7 @@ var Game = {
 
 		var bufferSize = 3;
 		this.textBuffer.configure({
-			display: PixiDisplay,
+			display: this.pdisplay,
 			position: new XY(0, size.y),
 			size: new XY(size.x, bufferSize)
 		});
