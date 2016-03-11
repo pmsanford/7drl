@@ -35,16 +35,19 @@ var Game = {
 		var size = level.getSize();
 		this._switchLevel(level);
 		this.level.setEntity(this.player, new XY(Math.round(size.x/2), Math.round(size.y/2)));
-
+		
+		this.pdisplay.draw();
 		this.engine.start();
 	},
 
 	draw: function(xy) {
 		var entity = this.level.getEntityAt(xy);
 		var visual = entity.getVisual();
-		//this.display.draw(xy.x, xy.y, visual.ch, visual.fg, visual.bg);
-		this.pdisplay.set(xy.x, xy.y, visual.ch, visual.fg, visual.bg);
-		this.pdisplay.draw();
+		if (visual.ch === '@') {
+		  this.pdisplay.setAni(xy.x, xy.y, ['@', '*'], visual.fg, visual.bg);
+		} else {
+		  this.pdisplay.set(xy.x, xy.y, visual.ch, visual.fg, visual.bg);
+		}
 	},
 	
 	over: function() {

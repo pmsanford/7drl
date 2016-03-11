@@ -9,6 +9,7 @@ var PixiDisplay = function(parent, spritesheet) {
 
 PixiDisplay.prototype.draw = function() {
   renderer.render(this.stage);
+  requestAnimationFrame(this.draw.bind(this));
 };
 
 PixiDisplay.prototype.set = function(x, y, ch, fg, bg) {
@@ -25,6 +26,25 @@ PixiDisplay.prototype.set = function(x, y, ch, fg, bg) {
   this.stage.addChild(spr);
   this.sprites[locstr] = spr;
 };
+
+PixiDisplay.prototype.setAni = function(x, y, chs, fg, bg) {
+  this.clear(x, y);
+  texes = [];
+  for (var i = 0; i < chs.length; i++) {
+    texes.push(this.sheet.GetTexture(this._get_id(chs[i])));
+  }
+  
+  var spr = new PIXI.extras.MovieClip(texes);
+  spr.scale.x = this.scale;
+  spr.scale.y = this.scale;
+  spr.position.x = this._to_x(x);
+  spr.position.y = this._to_y(y);
+  spr.animationSpeed = 0.025;
+  this.stage.addChild(spr);
+  spr.play();
+  var locstr = this._get_key(x, y);
+  this.sprites[locstr] = spr;
+}
 
 PixiDisplay.prototype.clear = function(x, y) {
   var locstr = this._get_key(x, y);
@@ -62,6 +82,9 @@ PixiDisplay.prototype._pad_left = function(x) {
 PixiDisplay.prototype._get_id = function(chr) {
   if (chr == '@') {
     return 1;
+  }
+  if (chr == '*') {
+    return 2;
   }
   if (chr == '.') {
     return 46;
