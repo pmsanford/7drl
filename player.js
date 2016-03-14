@@ -28,6 +28,10 @@ var Player = function() {
 	this._dirKeys[ROT.VK_NUMPAD5] = -1;
 
 	this._inventory = [];
+
+	this._weapon = null;
+
+	this._keyHandler = null;
 }
 Player.extend(Being);
 
@@ -55,6 +59,10 @@ Player.prototype.handleEvent = function(e) {
 }
 
 Player.prototype._handleKey = function(code) {
+	var acted = false;
+	if (this._keyHandler) {
+		return this._keyHandler(code);
+	}
 	if (code in this._dirKeys) {
 		Game.textBuffer.clear();
 
@@ -75,6 +83,7 @@ Player.prototype._handleKey = function(code) {
 		if (item !== null) {
 			this._inventory.push(item);
 			Game.textBuffer.write("Picked up a " + item.name + ".");
+			acted = true;
 		} else {
 			Game.textBuffer.write("There's nothing to pick up.");
 		}
@@ -82,11 +91,42 @@ Player.prototype._handleKey = function(code) {
 	}
 	if (code == ROT.VK_I) {
 		Game.textBuffer.write("Inventory: ");
-		for (var i = 0; i < this._inventory.length; i++) {
-			Game.textBuffer.write(String.fromCharCode(i + 97) + ". " + this._inventory[i].name + ";");
-		}
+		this._showInventory();
 		Game.textBuffer.flush();
 	}
+	if (code == ROT.VK_W) {
+		Game.textBuffer.write("What do you want to wield? ");
+		this._showInventory();
+		Game.textBuffer.flush();
+		this._keyHandler = this._wieldWeapon.bind(this);
+	}
 
-	return false; /* unknown key */
+	return acted; /* unknown key */
+}
+
+Player.prototype._wieldWeapon = function(code) {
+	var acted = false;
+	if (code == 189) {
+		Game.textBuffer.write("Now fighting with bare hands.");
+		this._weapon = null;
+		acted = true;
+	} else {
+		var idx = code - 65;
+		if (this._inventory[idx]) {
+			this._weapon = this._inventory[idx];
+			Game.textBuffer.write("Wielded " + this._weapon.name + ".");
+			acted = true;
+		} else {
+			Game.textBuffer.write("No such item.");
+		}
+	}
+	Game.textBuffer.flush();
+	this._keyHandler = null;
+	return acted;
+}
+
+Player.prototype._showInventory = function() {
+	for (var i = 0; i < this._inventory.length; i++) {
+		Game.textBuffer.write(String.fromCharCode(i + 97) + ". " + this._inventory[i].name + (this._weapon == this._inventory[i] ? "(w)" : "") + ";");
+	}
 }
