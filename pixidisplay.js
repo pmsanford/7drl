@@ -19,6 +19,10 @@ PixiDisplay.prototype.set = function(x, y, ch, fg, bg) {
   
   var tex = this.sheet.GetTexture(spid);
   var spr = new PIXI.Sprite(tex);
+  var tint = this._parseHexStr(fg);
+  if (fg != NaN) {
+    spr.tint = tint;
+  }
   spr.scale.x = this.scale;
   spr.scale.y = this.scale;
   spr.position.x = this._to_x(x);
@@ -26,6 +30,18 @@ PixiDisplay.prototype.set = function(x, y, ch, fg, bg) {
   this.stage.addChild(spr);
   this.sprites[locstr] = spr;
 };
+
+PixiDisplay.prototype._parseHexStr = function(hex) {
+  if (hex[0] == "#") {
+    hex = hex.substr(1);
+  }
+  if (hex.length == 3) {
+    hex = hex[0] + hex;
+    hex = hex.substr(0, 2) + hex[2] + hex[2] + hex.substr(3);
+    hex = hex + hex[4];
+  }
+  return parseInt(hex, 16);
+}
 
 PixiDisplay.prototype.setAni = function(x, y, chs, fg, bg) {
   this.clear(x, y);
