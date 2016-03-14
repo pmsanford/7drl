@@ -33,8 +33,7 @@ Level.prototype.setEntity = function(entity, xy) {
 	/* FIXME set new position, draw */
 	this._beings[xy] = entity;
 	if (Game.level == this) { 
-		Game.draw(xy); 
-		Game.textBuffer.write("An entity moves to " + xy + ".");
+		Game.draw(xy);
 	}
 }
 

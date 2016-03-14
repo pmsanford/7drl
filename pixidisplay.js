@@ -74,7 +74,7 @@ PixiDisplay.prototype.clearText = function() {
 };
   
 PixiDisplay.prototype.text = function(x, y, text) {
-  spr = new PIXI.Text(text, {'fill': 'red', font: 'bold 14px Arial'});
+  spr = new PIXI.Text(text, {'fill': 'red', font: 'bold 10px "Lucida Console"'});
   spr.position.x = this._to_x(x);
   spr.position.y = this._to_y(y);
   this.stage.addChild(spr);

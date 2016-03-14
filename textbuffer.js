@@ -34,7 +34,14 @@ TextBuffer.prototype.flush = function() {
 	
 	d.clearText();
 
-	var text = this._data.join(" ");
+	var textLines = [];
+
+	for (var i = o.size.y; i > 0; i--) {
+		var idx = this._data.length - i;
+		textLines.push(this._data[idx]);
+	}
+
+	var text = textLines.join("\n");
 	d.text(pos.x, pos.y, text, size.x);
 	d.draw();
 }

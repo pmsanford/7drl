@@ -68,7 +68,6 @@ var Game = {
 			position: new XY(0, size.y),
 			size: new XY(size.x, bufferSize)
 		});
-		this.textBuffer.clear();
 
 		/* FIXME draw a level */
 		var xy = new XY();

@@ -36,8 +36,6 @@ var Player = function() {
 Player.extend(Being);
 
 Player.prototype.act = function() {
-	Game.textBuffer.write("It is your turn, press any relevant key.");
-	Game.textBuffer.flush();
 	Game.engine.lock();
 	window.addEventListener("keydown", this);
 }
@@ -64,8 +62,6 @@ Player.prototype._handleKey = function(code) {
 		return this._keyHandler(code);
 	}
 	if (code in this._dirKeys) {
-		Game.textBuffer.clear();
-
 		var direction = this._dirKeys[code];
 		if (direction == -1) { /* noop */
 			/* FIXME show something? */
