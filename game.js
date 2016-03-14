@@ -25,7 +25,7 @@ var Game = {
 	},
 	
 	finalizeLoad: function(sheet) {
-	  this.sheet = sheet;
+		this.sheet = sheet;
 		this.pdisplay = new PixiDisplay(document.body, this.sheet);
 		this.textBuffer = new TextBuffer(this.pdisplay);
 		this.player = new Player();
@@ -49,6 +49,10 @@ var Game = {
 	over: function() {
 		this.engine.lock();
 		/* FIXME show something */
+	},
+
+	getItem: function(xy) {
+		return this.level.getItemAt(xy);
 	},
 
 	_switchLevel: function(level) {

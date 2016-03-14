@@ -38,6 +38,16 @@ Level.prototype.setEntity = function(entity, xy) {
 	}
 }
 
+Level.prototype.getItemAt = function(xy) {
+	if (this._items[xy]) {
+		var item = this._items[xy];
+		delete this._items[xy];
+		return item;
+	}
+
+	return null;
+}
+
 Level.prototype.getEntityAt = function(xy) {
 	return this._beings[xy] || this._items[xy] || this._map[xy] || this._empty;
 }
