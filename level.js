@@ -7,6 +7,13 @@ var Level = function() {
 	this._map = {};
 
 	this._empty = new Entity({ch:".", fg:"#888", bg:null});
+
+	item = Item.CreateSword();
+	loc = new XY(10, 10);
+	item.setPosition(loc, this);
+
+	this._items = {};
+	this._items[loc] = item;
 }
 
 Level.prototype.getSize = function() {
@@ -32,7 +39,7 @@ Level.prototype.setEntity = function(entity, xy) {
 }
 
 Level.prototype.getEntityAt = function(xy) {
-	return this._beings[xy] || this._map[xy] || this._empty;
+	return this._beings[xy] || this._items[xy] || this._map[xy] || this._empty;
 }
 
 Level.prototype.getBeings = function() {

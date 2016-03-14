@@ -26,6 +26,8 @@ var Player = function() {
 	this._keys[ROT.VK_PERIOD] = -1;
 	this._keys[ROT.VK_CLEAR] = -1;
 	this._keys[ROT.VK_NUMPAD5] = -1;
+
+	this._inventory = [];
 }
 Player.extend(Being);
 

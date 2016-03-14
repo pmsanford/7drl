@@ -43,11 +43,7 @@ var Game = {
 	draw: function(xy) {
 		var entity = this.level.getEntityAt(xy);
 		var visual = entity.getVisual();
-		if (visual.ch === '@') {
-		  this.pdisplay.setAni(xy.x, xy.y, ['@', '*'], visual.fg, visual.bg);
-		} else {
-		  this.pdisplay.set(xy.x, xy.y, visual.ch, visual.fg, visual.bg);
-		}
+		this.pdisplay.set(xy.x, xy.y, visual.ch, visual.fg, visual.bg);
 	},
 	
 	over: function() {
