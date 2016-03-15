@@ -34,7 +34,7 @@ var Game = {
 		var level = new Level();
 		var size = level.getSize();
 		this._switchLevel(level);
-		this.level.setEntity(this.player, new XY(Math.round(size.x/2), Math.round(size.y/2)));
+		this.level.setBeing(this.player, new XY(Math.round(size.x/2), Math.round(size.y/2)));
 		
 		this.pdisplay.draw();
 		this.engine.start();
@@ -58,6 +58,10 @@ var Game = {
 	isBlocked: function(xy) {
 		var size = this.level.getSize();
 		return this.level.isBlocked(xy) || xy.x >= size.x || xy.y >= size.y;
+	},
+
+	getPlayer: function() {
+		return this.player;
 	},
 
 	_switchLevel: function(level) {

@@ -18,13 +18,17 @@ var Level = function() {
 	loc = new XY(15, 15);
 	var wall = new MapFeature({ch:"#", fg:"#880"});
 	this.setMap(wall, loc);
+
+	loc = new XY(2, 2);
+	var mon = new Monster({ch:"*", fg:"#070"});
+	this.setBeing(mon, loc);
 }
 
 Level.prototype.getSize = function() {
 	return this._size;
 }
 
-Level.prototype.setEntity = function(entity, xy) {
+Level.prototype.setBeing = function(entity, xy) {
 	this._setEntity(entity, xy, this._beings);
 }
 

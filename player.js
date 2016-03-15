@@ -75,7 +75,7 @@ Player.prototype._handleKey = function(code) {
 			Game.textBuffer.write("Can't go that way.");
 			Game.textBuffer.flush();
 		} else {
-			this._level.setEntity(this, xy);
+			this._level.setBeing(this, xy);
 		}
 		return true;
 	}
