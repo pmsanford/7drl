@@ -71,7 +71,12 @@ Player.prototype._handleKey = function(code) {
 		var dir = ROT.DIRS[8][direction];
 		var xy = this._xy.plus(new XY(dir[0], dir[1]));
 
-		this._level.setEntity(this, xy); /* FIXME collision detection */
+		if (Game.isBlocked(xy)) {
+			Game.textBuffer.write("Can't go that way.");
+			Game.textBuffer.flush();
+		} else {
+			this._level.setEntity(this, xy);
+		}
 		return true;
 	}
 	if (code == ROT.VK_COMMA) {

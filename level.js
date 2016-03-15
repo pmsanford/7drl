@@ -8,12 +8,16 @@ var Level = function() {
 
 	this._empty = new Entity({ch:".", fg:"#888", bg:null});
 
-	item = Item.CreateSword();
-	loc = new XY(10, 10);
+	var item = Item.CreateSword();
+	var loc = new XY(10, 10);
 	item.setPosition(loc, this);
 
 	this._items = {};
 	this._items[loc] = item;
+
+	loc = new XY(15, 15);
+	var wall = new MapFeature({ch:"#", fg:"#880"});
+	this._map[loc] = wall;
 }
 
 Level.prototype.getSize = function() {
@@ -35,6 +39,10 @@ Level.prototype.setEntity = function(entity, xy) {
 	if (Game.level == this) { 
 		Game.draw(xy);
 	}
+}
+
+Level.prototype.isBlocked = function(xy) {
+	return this._map[xy] && this._map[xy].blocking;
 }
 
 Level.prototype.getItemAt = function(xy) {

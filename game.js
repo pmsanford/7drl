@@ -55,6 +55,10 @@ var Game = {
 		return this.level.getItemAt(xy);
 	},
 
+	isBlocked: function(xy) {
+		return this.level.isBlocked(xy);
+	},
+
 	_switchLevel: function(level) {
 		/* remove old beings from the scheduler */
 		this.scheduler.clear();

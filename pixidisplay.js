@@ -106,6 +106,9 @@ PixiDisplay.prototype._get_id = function(chr) {
   if (chr == '/') {
     return 47;
   }
+  if (chr == '#') {
+    return 35;
+  }
   return 0;
 };
 
