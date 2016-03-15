@@ -1,5 +1,10 @@
 var PixiDisplay = function(parent, spritesheet) {
     this.stage = new PIXI.Container();
+    this.display = new PIXI.Container();
+    this.overlay = new PIXI.Container();
+    this.overlay.alpha = 0.6;
+    this.stage.addChild(this.display);
+    this.stage.addChild(this.overlay);
     this.sheet = spritesheet;
     this.scale = 1;
     this.sprites = {};
@@ -15,7 +20,7 @@ PixiDisplay.prototype.draw = function() {
 PixiDisplay.prototype.set = function(x, y, ch, fg, bg) {
   var spid = this._get_id(ch);
   this.clear(x, y);
-  var locstr = this._get_key(x, y);
+  var xy = this._get_key(x, y);
   
   var tex = this.sheet.GetTexture(spid);
   var spr = new PIXI.Sprite(tex);
@@ -27,9 +32,29 @@ PixiDisplay.prototype.set = function(x, y, ch, fg, bg) {
   spr.scale.y = this.scale;
   spr.position.x = this._to_x(x);
   spr.position.y = this._to_y(y);
-  this.stage.addChild(spr);
-  this.sprites[locstr] = spr;
+  this.display.addChild(spr);
+  this.sprites[xy] = spr;
 };
+
+PixiDisplay.prototype.setOverlay = function(x, y, ch, fg) {
+  var xy = this._get_key(x, y);
+  var spid = this._get_id(ch);
+  var oltex = this.sheet.GetTexture(spid);
+  var spr = new PIXI.Sprite(oltex);
+  var tint = this._parseHexStr(fg);
+  if (fg != NaN) {
+    spr.tint = tint;
+  }
+  spr.scale.x = this.scale;
+  spr.scale.y = this.scale;
+  spr.position.x = this._to_x(x);
+  spr.position.y = this._to_y(y);
+  this.overlay.addChild(spr);
+};
+
+PixiDisplay.prototype.clearOverlay = function() {
+  this.overlay.removeChildren();
+}
 
 PixiDisplay.prototype._parseHexStr = function(hex) {
   if (hex[0] == "#") {
@@ -41,7 +66,7 @@ PixiDisplay.prototype._parseHexStr = function(hex) {
     hex = hex + hex[4];
   }
   return parseInt(hex, 16);
-}
+};
 
 PixiDisplay.prototype.setAni = function(x, y, chs, fg, bg) {
   this.clear(x, y);
@@ -56,41 +81,33 @@ PixiDisplay.prototype.setAni = function(x, y, chs, fg, bg) {
   spr.position.x = this._to_x(x);
   spr.position.y = this._to_y(y);
   spr.animationSpeed = 0.025;
-  this.stage.addChild(spr);
+  this.display.addChild(spr);
   spr.play();
-  var locstr = this._get_key(x, y);
-  this.sprites[locstr] = spr;
+  var xy = this._get_key(x, y);
+  this.sprites[xy] = spr;
 }
 
 PixiDisplay.prototype.clear = function(x, y) {
-  var locstr = this._get_key(x, y);
-  if (this.sprites[locstr] !== undefined) {
-    this.stage.removeChild(this.sprites[locstr]);
+  var xy = this._get_key(x, y);
+  if (this.sprites[xy] !== undefined) {
+    this.display.removeChild(this.sprites[xy]);
   }
 };
   
 PixiDisplay.prototype.clearText = function() {
-  this.stage.removeChild(this._text);
+  this.display.removeChild(this._text);
 };
   
 PixiDisplay.prototype.text = function(x, y, text) {
   spr = new PIXI.Text(text, {'fill': 'red', font: 'bold 10px "Lucida Console"'});
   spr.position.x = this._to_x(x);
   spr.position.y = this._to_y(y);
-  this.stage.addChild(spr);
+  this.display.addChild(spr);
   this._text = spr;
 };
   
 PixiDisplay.prototype._get_key = function(x, y) {
-  return this._pad_left(x) + this._pad_left(y);
-};
-
-PixiDisplay.prototype._pad_left = function(x) {
-  var istring = String(x);
-  if (istring.length < 2) {
-    istring = "0" + istring;
-  }
-  return istring;
+  return new XY(x, y);
 };
 
 PixiDisplay.prototype._get_id = function(chr) {
@@ -108,6 +125,9 @@ PixiDisplay.prototype._get_id = function(chr) {
   }
   if (chr == '#') {
     return 35;
+  }
+  if (chr == '&') {
+    return 178;
   }
   return 0;
 };
