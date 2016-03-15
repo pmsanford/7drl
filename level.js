@@ -13,11 +13,11 @@ var Level = function() {
 	item.setPosition(loc, this);
 
 	this._items = {};
-	this._items[loc] = item;
+	this.setItem(item, loc);
 
 	loc = new XY(15, 15);
 	var wall = new MapFeature({ch:"#", fg:"#880"});
-	this._map[loc] = wall;
+	this.setMap(wall, loc);
 }
 
 Level.prototype.getSize = function() {
@@ -25,20 +25,32 @@ Level.prototype.getSize = function() {
 }
 
 Level.prototype.setEntity = function(entity, xy) {
+	this._setEntity(entity, xy, this._beings);
+}
+
+Level.prototype._setEntity = function(entity, xy, list) {
 	/* FIXME remove from old position, draw */
 	if (entity.getLevel() == this) {
 		var oldXY = entity.getXY();
-		delete this._beings[oldXY];
+		delete list[oldXY];
 		if (Game.level == this) { Game.draw(oldXY); }
 	}
 
 	entity.setPosition(xy, this); /* propagate position data to the entity itself */
 
 	/* FIXME set new position, draw */
-	this._beings[xy] = entity;
+	list[xy] = entity;
 	if (Game.level == this) { 
 		Game.draw(xy);
 	}
+}
+
+Level.prototype.setItem = function(entity, xy) {
+	this._setEntity(entity, xy, this._items);
+}
+
+Level.prototype.setMap = function(entity, xy) {
+	this._setEntity(entity, xy, this._map);
 }
 
 Level.prototype.isBlocked = function(xy) {

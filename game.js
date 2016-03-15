@@ -56,7 +56,8 @@ var Game = {
 	},
 
 	isBlocked: function(xy) {
-		return this.level.isBlocked(xy);
+		var size = this.level.getSize();
+		return this.level.isBlocked(xy) || xy.x >= size.x || xy.y >= size.y;
 	},
 
 	_switchLevel: function(level) {
