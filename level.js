@@ -61,6 +61,10 @@ Level.prototype.isBlocked = function(xy) {
 	return this._map[xy] && this._map[xy].blocking;
 }
 
+Level.prototype.getBeingAt = function(xy) {
+	return this._beings[xy];
+}
+
 Level.prototype.getItemAt = function(xy) {
 	if (this._items[xy]) {
 		var item = this._items[xy];

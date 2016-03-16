@@ -60,6 +60,10 @@ var Game = {
 		return this.level.isBlocked(xy) || xy.x >= size.x || xy.y >= size.y;
 	},
 
+	getEnemy: function(xy) {
+		return this.level.getBeingAt(xy);
+	},
+
 	getPlayer: function() {
 		return this.player;
 	},

@@ -1,6 +1,8 @@
 var Monster = function(visual) {
 	Being.call(this, visual);
 	this._path = null;
+	this.name = "goblin";
+	this._damage = 5;
 }
 Monster.extend(Being);
 
@@ -13,16 +15,17 @@ Monster.prototype.act = function() {
 	var fov = new ROT.FOV.PreciseShadowcasting(passable);
 
 	var spotted = false;
-	var player = Game.getPlayer().getXY();
+	var player = Game.getPlayer();
+	var playerPos = player.getXY();
 
 	fov.compute(this._xy.x, this._xy.y, this._visRadius, function(x, y, r, vis) {
 		var xy = new XY(x, y);
-		if (xy.is(player)) {
+		if (xy.is(playerPos)) {
 			spotted = true;
 		}
 	});
 
-	var dijk = new ROT.Path.Dijkstra(player.x, player.y, passable);
+	var dijk = new ROT.Path.Dijkstra(playerPos.x, playerPos.y, passable);
 
 
 	var path = []
@@ -37,11 +40,19 @@ Monster.prototype.act = function() {
 		this._path.pop();
 
 		if (this._path.length == 0) {
-			console.log("Attack");
+			Game.textBuffer.write(`The ${this.name} hits you for ${this._damage} damage!`);
+			Game.textBuffer.flush();
+			player.damage(this._damage);
 		}
 	}
 
 	if (this._path && this._path.length > 0) {
 		this._level.setBeing(this, this._path.pop());
 	}
+};
+
+Monster.prototype.die = function() {
+	Game.textBuffer.write(`The ${this.name} falls down dead!`);
+	Game.textBuffer.flush();
+	Being.prototype.die.call(this);
 };

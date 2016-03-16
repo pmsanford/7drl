@@ -32,6 +32,8 @@ var Player = function() {
 	this._weapon = null;
 
 	this._keyHandler = null;
+
+	this._unarmedDamage = 1;
 }
 Player.extend(Being);
 
@@ -41,6 +43,8 @@ Player.prototype.act = function() {
 }
 
 Player.prototype.die = function() {
+	Game.textBuffer.write("You're dead! Game over!");
+	Game.textBuffer.flush();
 	Being.prototype.die.call(this);
 	Game.over();
 }
@@ -54,6 +58,10 @@ Player.prototype.handleEvent = function(e) {
 		window.removeEventListener("keydown", this);
 		Game.engine.unlock();
 	}
+}
+
+Player.prototype._calcDamage = function() {
+	return this._unarmedDamage;
 }
 
 Player.prototype._handleKey = function(code) {
@@ -71,7 +79,15 @@ Player.prototype._handleKey = function(code) {
 		var dir = ROT.DIRS[8][direction];
 		var xy = this._xy.plus(new XY(dir[0], dir[1]));
 
-		if (Game.isBlocked(xy)) {
+		var enemy = null;
+
+		if (enemy = Game.getEnemy(xy)) {
+			var damage = this._calcDamage();
+			Game.textBuffer.write(`You hit the ${enemy.name} for ${damage} points of damage!`);
+			Game.textBuffer.flush();
+			enemy.damage(damage);
+		}
+		else if (Game.isBlocked(xy)) {
 			Game.textBuffer.write("Can't go that way.");
 			Game.textBuffer.flush();
 		} else {
