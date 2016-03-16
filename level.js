@@ -8,7 +8,7 @@ var Level = function() {
 
 	this._empty = new Entity({ch:".", fg:"#888", bg:null});
 
-	var item = Item.CreateSword();
+	var item = Weapon.createSword();
 	var loc = new XY(10, 10);
 	item.setPosition(loc, this);
 
@@ -26,6 +26,14 @@ var Level = function() {
 
 Level.prototype.getSize = function() {
 	return this._size;
+}
+
+Level.prototype.removeBeing = function(being) {
+	var xy = being.getXY();
+	if (this._beings[xy] == being) {
+		delete this._beings[xy];
+		if (Game.level == this) { Game.draw(xy); }
+	}
 }
 
 Level.prototype.setBeing = function(entity, xy) {

@@ -2,7 +2,7 @@ var Monster = function(visual) {
 	Being.call(this, visual);
 	this._path = null;
 	this.name = "goblin";
-	this._damage = 5;
+	this._damage = 3;
 }
 Monster.extend(Being);
 
@@ -54,5 +54,6 @@ Monster.prototype.act = function() {
 Monster.prototype.die = function() {
 	Game.textBuffer.write(`The ${this.name} falls down dead!`);
 	Game.textBuffer.flush();
+	Game.kill(this);
 	Being.prototype.die.call(this);
 };

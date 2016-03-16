@@ -51,6 +51,10 @@ var Game = {
 		/* FIXME show something */
 	},
 
+	kill: function(being) {
+		this.level.removeBeing(being);
+	},
+
 	getItem: function(xy) {
 		return this.level.getItemAt(xy);
 	},

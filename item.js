@@ -3,7 +3,3 @@ var Item = function(visual, name) {
 	this.name = name;
 };
 Item.extend(Entity);
-
-Item.CreateSword = function() {
-	return new Item({ch:"/", fg:"#fff"}, 'Sword');
-}

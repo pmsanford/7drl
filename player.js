@@ -61,6 +61,9 @@ Player.prototype.handleEvent = function(e) {
 }
 
 Player.prototype._calcDamage = function() {
+	if (this._weapon) {
+		return this._weapon.getDamage();
+	}
 	return this._unarmedDamage;
 }
 
