@@ -29,7 +29,7 @@ var Player = function() {
 
 	this._inventory = [];
 
-	this._weapon = null;
+	this._wielded = null;
 
 	this._keyHandler = null;
 
@@ -61,8 +61,8 @@ Player.prototype.handleEvent = function(e) {
 }
 
 Player.prototype._calcDamage = function() {
-	if (this._weapon) {
-		return this._weapon.getDamage();
+	if (this._wielded && this._wielded instanceof Weapon) {
+		return this._wielded.getDamage();
 	}
 	return this._unarmedDamage;
 }
@@ -128,13 +128,13 @@ Player.prototype._wieldWeapon = function(code) {
 	var acted = false;
 	if (code == 189) {
 		Game.textBuffer.write("Now fighting with bare hands.");
-		this._weapon = null;
+		this._wielded = null;
 		acted = true;
 	} else {
 		var idx = code - 65;
 		if (this._inventory[idx]) {
-			this._weapon = this._inventory[idx];
-			Game.textBuffer.write("Wielded " + this._weapon.name + ".");
+			this._wielded = this._inventory[idx];
+			Game.textBuffer.write("Wielded " + this._wielded.name + ".");
 			acted = true;
 		} else {
 			Game.textBuffer.write("No such item.");
@@ -147,6 +147,6 @@ Player.prototype._wieldWeapon = function(code) {
 
 Player.prototype._showInventory = function() {
 	for (var i = 0; i < this._inventory.length; i++) {
-		Game.textBuffer.write(String.fromCharCode(i + 97) + ". " + this._inventory[i].name + (this._weapon == this._inventory[i] ? "(w)" : "") + ";");
+		Game.textBuffer.write(String.fromCharCode(i + 97) + ". " + this._inventory[i].name + (this._wielded == this._inventory[i] ? "(w)" : "") + ";");
 	}
 }
