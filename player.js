@@ -34,20 +34,20 @@ var Player = function() {
 	this._keyHandler = null;
 
 	this._unarmedDamage = 1;
-}
+};
 Player.extend(Being);
 
 Player.prototype.act = function() {
 	Game.engine.lock();
 	window.addEventListener("keydown", this);
-}
+};
 
 Player.prototype.die = function() {
 	Game.textBuffer.write("You're dead! Game over!");
 	Game.textBuffer.flush();
 	Being.prototype.die.call(this);
 	Game.over();
-}
+};
 
 Player.prototype.handleEvent = function(e) {
 	var code = e.keyCode;
@@ -58,24 +58,24 @@ Player.prototype.handleEvent = function(e) {
 		window.removeEventListener("keydown", this);
 		Game.engine.unlock();
 	}
-}
+};
 
 Player.prototype._calcDamage = function() {
 	if (this._wielded && this._wielded instanceof Weapon) {
 		return this._wielded.getDamage();
 	}
 	return this._unarmedDamage;
-}
+};
 
 Player.prototype._getXYFromDirection = function(direction) {
 	var dir = ROT.DIRS[8][direction];
 	var xy = this._xy.plus(new XY(dir[0], dir[1]));
 	return xy;
-}
+};
 
 Player.prototype._getDirectionFromKeycode = function(code) {
 	return this._dirKeys[code];
-}
+};
 
 Player.prototype._handleKey = function(code) {
 	var acted = false;
@@ -120,7 +120,7 @@ Player.prototype._handleKey = function(code) {
 	if (code == ROT.VK_O) {
 		Game.textBuffer.write("What direction? ");
 		Game.textBuffer.flush();
-		this._keyHandler = this._openDoor.bind(this);
+		this._keyHandler = this._manipulateDoor.bind(this, Game.openDoorAt);
 	}
 	if (code == ROT.VK_I) {
 		Game.textBuffer.write("Inventory: ");
@@ -135,9 +135,9 @@ Player.prototype._handleKey = function(code) {
 	}
 
 	return acted; /* unknown key */
-}
+};
 
-Player.prototype._openDoor = function(code) {
+Player.prototype._manipulateDoor = function(call, code) {
 	var succeeded = false;
 	if (code in this._dirKeys) {
 		var dir = this._getDirectionFromKeycode(code);
@@ -146,7 +146,7 @@ Player.prototype._openDoor = function(code) {
 			Game.textBuffer.flush();
 		} else {
 			var xy = this._getXYFromDirection(dir);
-			succeeded = Game.openDoorAt(xy);
+			succeeded = call(xy);
 		}
 	} else {
 		Game.textBuffer.write("Nevermind.");
@@ -154,7 +154,7 @@ Player.prototype._openDoor = function(code) {
 	}
 	this._keyHandler = null;
 	return succeeded;
-}
+};
 
 Player.prototype._wieldWeapon = function(code) {
 	var acted = false;
@@ -175,10 +175,10 @@ Player.prototype._wieldWeapon = function(code) {
 	Game.textBuffer.flush();
 	this._keyHandler = null;
 	return acted;
-}
+};
 
 Player.prototype._showInventory = function() {
 	for (var i = 0; i < this._inventory.length; i++) {
 		Game.textBuffer.write(String.fromCharCode(i + 97) + ". " + this._inventory[i].name + (this._wielded == this._inventory[i] ? "(w)" : "") + ";");
 	}
-}
+};

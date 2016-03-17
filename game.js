@@ -72,13 +72,29 @@ var Game = {
 		return this.player;
 	},
 
-	openDoorAt: function(xy) {
+	_getDoor: function(xy) {
 		var door = this.level.getMapFeatureAt(xy);
 		if (door && door instanceof Door) {
-			return door.open();
+			return door;
 		} else {
 			Game.textBuffer.write("No door there.");
 			Game.textBuffer.flush();
+		}
+		return null;
+	},
+
+	openDoorAt: function(xy) {
+		var door = Game._getDoor(xy);
+		if (door) {
+			return door.open();
+		}
+		return false;
+	},
+
+	closeDoorAt: function(xy) {
+		var door = Game._getDoor(xy);
+		if (door) {
+			return door.close();
 		}
 		return false;
 	},
