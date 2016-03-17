@@ -67,20 +67,28 @@ Player.prototype._calcDamage = function() {
 	return this._unarmedDamage;
 }
 
+Player.prototype._getXYFromDirection = function(direction) {
+	var dir = ROT.DIRS[8][direction];
+	var xy = this._xy.plus(new XY(dir[0], dir[1]));
+	return xy;
+}
+
+Player.prototype._getDirectionFromKeycode = function(code) {
+	return this._dirKeys[code];
+}
+
 Player.prototype._handleKey = function(code) {
 	var acted = false;
 	if (this._keyHandler) {
 		return this._keyHandler(code);
 	}
 	if (code in this._dirKeys) {
-		var direction = this._dirKeys[code];
+		var direction = this._getDirectionFromKeycode(code);
 		if (direction == -1) { /* noop */
 			/* FIXME show something? */
 			return true;
 		}
-
-		var dir = ROT.DIRS[8][direction];
-		var xy = this._xy.plus(new XY(dir[0], dir[1]));
+		var xy = this._getXYFromDirection(direction);
 
 		var enemy = null;
 
@@ -109,6 +117,11 @@ Player.prototype._handleKey = function(code) {
 		}
 		Game.textBuffer.flush();
 	}
+	if (code == ROT.VK_O) {
+		Game.textBuffer.write("What direction? ");
+		Game.textBuffer.flush();
+		this._keyHandler = this._openDoor.bind(this);
+	}
 	if (code == ROT.VK_I) {
 		Game.textBuffer.write("Inventory: ");
 		this._showInventory();
@@ -122,6 +135,25 @@ Player.prototype._handleKey = function(code) {
 	}
 
 	return acted; /* unknown key */
+}
+
+Player.prototype._openDoor = function(code) {
+	var succeeded = false;
+	if (code in this._dirKeys) {
+		var dir = this._getDirectionFromKeycode(code);
+		if (dir == -1) {
+			Game.textBuffer.write("Nevermind.");
+			Game.textBuffer.flush();
+		} else {
+			var xy = this._getXYFromDirection(dir);
+			succeeded = Game.openDoorAt(xy);
+		}
+	} else {
+		Game.textBuffer.write("Nevermind.");
+		Game.textBuffer.flush();
+	}
+	this._keyHandler = null;
+	return succeeded;
 }
 
 Player.prototype._wieldWeapon = function(code) {

@@ -72,6 +72,17 @@ var Game = {
 		return this.player;
 	},
 
+	openDoorAt: function(xy) {
+		var door = this.level.getMapFeatureAt(xy);
+		if (door && door instanceof Door) {
+			return door.open();
+		} else {
+			Game.textBuffer.write("No door there.");
+			Game.textBuffer.flush();
+		}
+		return false;
+	},
+
 	_switchLevel: function(level) {
 		/* remove old beings from the scheduler */
 		this.scheduler.clear();

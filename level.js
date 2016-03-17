@@ -117,6 +117,10 @@ Level.prototype.getItemAt = function(xy) {
 	return null;
 };
 
+Level.prototype.getMapFeatureAt = function(xy) {
+	return this._map[xy];
+}
+
 Level.prototype.getEntityAt = function(xy) {
 	return this._beings[xy] || this._items[xy] || this._map[xy] || this._empty;
 };

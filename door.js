@@ -7,3 +7,16 @@ Door.extend(MapFeature);
 Door.prototype.isBlocking = function() {
 	return !(this._state == "open");
 }
+
+Door.prototype.open = function() {
+	if (this._state == "closed") {
+		this._state = "open";
+		this._visual = {ch: "/", fg: this._visual.fg};
+		Game.draw(this._xy);
+		return true;
+	} else {
+		Game.textBuffer.write("That door is already open!");
+		Game.textBuffer.flush();
+	}
+	return false;
+}
