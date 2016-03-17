@@ -72,6 +72,13 @@ var Game = {
 		return this.player;
 	},
 
+	exploreAt: function(xy) {
+		var feature = this.level.getMapFeatureAt(xy);
+		if (feature && feature.explore()) {
+			Game.draw(xy);
+		}
+	},
+
 	_getDoor: function(xy) {
 		var door = this.level.getMapFeatureAt(xy);
 		if (door && door instanceof Door) {

@@ -11,14 +11,11 @@ Monster.prototype.act = function() {
 		var xy = new XY(x, y);
 		return !Game.isBlocked(xy);
 	};
-
-	var fov = new ROT.FOV.PreciseShadowcasting(passable);
-
 	var spotted = false;
 	var player = Game.getPlayer();
 	var playerPos = player.getXY();
 
-	fov.compute(this._xy.x, this._xy.y, this._visRadius, function(x, y, r, vis) {
+	this._computeFOV(function(x, y, r, vis) {
 		var xy = new XY(x, y);
 		if (xy.is(playerPos)) {
 			spotted = true;

@@ -35,3 +35,14 @@ Being.prototype.setPosition = function(xy, level) {
 
 	return Entity.prototype.setPosition.call(this, xy, level);
 }
+
+Being.prototype._computeFOV = function(callback) {
+	var passable = function(x, y) {
+		var xy = new XY(x, y);
+		return !Game.isBlocked(xy);
+	};
+
+	var fov = new ROT.FOV.PreciseShadowcasting(passable);
+
+	fov.compute(this._xy.x, this._xy.y, this._visRadius, callback);
+}

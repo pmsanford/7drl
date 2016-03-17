@@ -39,6 +39,12 @@ Player.extend(Being);
 
 Player.prototype.act = function() {
 	Game.engine.lock();
+
+	this._computeFOV(function(x, y, r, vis) {
+		var xy = new XY(x, y);
+		Game.exploreAt(xy);
+	});
+
 	window.addEventListener("keydown", this);
 };
 
