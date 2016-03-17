@@ -122,6 +122,11 @@ Player.prototype._handleKey = function(code) {
 		Game.textBuffer.flush();
 		this._keyHandler = this._manipulateDoor.bind(this, Game.openDoorAt);
 	}
+	if (code == ROT.VK_C) {
+		Game.textBuffer.write("What direction? ");
+		Game.textBuffer.flush();
+		this._keyHandler = this._manipulateDoor.bind(this, Game.closeDoorAt);
+	}
 	if (code == ROT.VK_I) {
 		Game.textBuffer.write("Inventory: ");
 		this._showInventory();
