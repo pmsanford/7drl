@@ -31,7 +31,7 @@ var Game = {
 		this.player = new Player();
 
 		/* FIXME build a level and position a player */
-		var level = new Level();
+		var level = Level.generateLevel();
 		var size = level.getSize();
 		this._switchLevel(level);
 		this.level.setBeing(this.player, new XY(Math.round(size.x/2), Math.round(size.y/2)));

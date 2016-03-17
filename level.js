@@ -6,22 +6,56 @@ var Level = function() {
 	this._size = new XY(80, 25);
 	this._map = {};
 
-	this._empty = new Entity({ch:".", fg:"#888", bg:null});
-
-	var item = Weapon.createSword();
-	var loc = new XY(10, 10);
-	item.setPosition(loc, this);
+	this._empty = new MapFeature({ch:" ", fg:"#fff", bg:null}, true);
 
 	this._items = {};
-	this.setItem(item, loc);
+}
 
-	loc = new XY(15, 15);
-	var wall = new MapFeature({ch:"#", fg:"#880"});
-	this.setMap(wall, loc);
+Level.generateLevel = function() {
+	var level = new Level();
 
-	loc = new XY(2, 2);
-	var mon = new Monster({ch:"*", fg:"#070"});
-	this.setBeing(mon, loc);
+	var callback = function(x, y, what) {
+		var xy = new XY(x, y);
+		if (what === 0) {
+			var floor = new MapFeature({ch: ".", fg: "#888"}, false);
+			level.setMap(floor, xy);
+		}
+	}
+
+	var doorCallback = function(x, y) {
+		var xy = new XY(x, y);
+		var door = new Door({ch: "-", "fg": "#f70"});
+		level.setMap(door, xy);
+	}
+
+	var map = new ROT.Map.Digger(level._size.x, level._size.y);
+
+	map.create(callback);
+
+	level._createWalls();
+
+	var rooms = map.getRooms();
+	for (var i = 0; i < rooms.length; i++) {
+		rooms[i].getDoors(doorCallback);
+	}
+
+	return level;
+}
+
+Level.prototype._createWalls = function() {
+	var keys = Object.keys(this._map);
+	for (var i = 0; i < keys.length; i++) {
+		for (var j = -1; j < 2; j++) {
+			for (var k = -1; k < 2; k++) {
+				var floc = this._map[keys[i]].getXY();
+				var xy = new XY(floc.x + j, floc.y + k);
+				if (this._map[xy]) {
+					continue;
+				}
+				this.setMap(new MapFeature({ch: "#", "fg": "#660"}, true), xy);
+			}
+		}
+	}
 }
 
 Level.prototype.getSize = function() {
@@ -66,7 +100,7 @@ Level.prototype.setMap = function(entity, xy) {
 }
 
 Level.prototype.isBlocked = function(xy) {
-	return this._map[xy] && this._map[xy].blocking;
+	return this._map[xy] === undefined || this._map[xy].isBlocking();
 }
 
 Level.prototype.getBeingAt = function(xy) {

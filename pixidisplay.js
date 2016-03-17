@@ -129,6 +129,12 @@ PixiDisplay.prototype._get_id = function(chr) {
   if (chr == '&') {
     return 178;
   }
+  if (chr == '-') {
+    return 233;
+  }
+  if (chr == '+') {
+    return 179;
+  }
   return 0;
 };
 
