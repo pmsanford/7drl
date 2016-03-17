@@ -9,7 +9,7 @@ var Level = function() {
 	this._empty = new MapFeature({ch:" ", fg:"#fff", bg:null}, true);
 
 	this._items = {};
-}
+};
 
 Level.generateLevel = function() {
 	var level = new Level();
@@ -24,7 +24,7 @@ Level.generateLevel = function() {
 
 	var doorCallback = function(x, y) {
 		var xy = new XY(x, y);
-		var door = new Door({ch: "-", "fg": "#f70"});
+		var door = new Door({ch: "+", "fg": "#f70"});
 		level.setMap(door, xy);
 	}
 
@@ -40,7 +40,7 @@ Level.generateLevel = function() {
 	}
 
 	return level;
-}
+};
 
 Level.prototype._createWalls = function() {
 	var keys = Object.keys(this._map);
@@ -56,11 +56,11 @@ Level.prototype._createWalls = function() {
 			}
 		}
 	}
-}
+};
 
 Level.prototype.getSize = function() {
 	return this._size;
-}
+};
 
 Level.prototype.removeBeing = function(being) {
 	var xy = being.getXY();
@@ -68,11 +68,11 @@ Level.prototype.removeBeing = function(being) {
 		delete this._beings[xy];
 		if (Game.level == this) { Game.draw(xy); }
 	}
-}
+};
 
 Level.prototype.setBeing = function(entity, xy) {
 	this._setEntity(entity, xy, this._beings);
-}
+};
 
 Level.prototype._setEntity = function(entity, xy, list) {
 	/* FIXME remove from old position, draw */
@@ -89,23 +89,23 @@ Level.prototype._setEntity = function(entity, xy, list) {
 	if (Game.level == this) { 
 		Game.draw(xy);
 	}
-}
+};
 
 Level.prototype.setItem = function(entity, xy) {
 	this._setEntity(entity, xy, this._items);
-}
+};
 
 Level.prototype.setMap = function(entity, xy) {
 	this._setEntity(entity, xy, this._map);
-}
+};
 
 Level.prototype.isBlocked = function(xy) {
 	return this._map[xy] === undefined || this._map[xy].isBlocking();
-}
+};
 
 Level.prototype.getBeingAt = function(xy) {
 	return this._beings[xy];
-}
+};
 
 Level.prototype.getItemAt = function(xy) {
 	if (this._items[xy]) {
@@ -115,13 +115,13 @@ Level.prototype.getItemAt = function(xy) {
 	}
 
 	return null;
-}
+};
 
 Level.prototype.getEntityAt = function(xy) {
 	return this._beings[xy] || this._items[xy] || this._map[xy] || this._empty;
-}
+};
 
 Level.prototype.getBeings = function() {
 	/* FIXME list of all beings */
 	return this._beings;
-}
+};
