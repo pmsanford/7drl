@@ -40,10 +40,17 @@ Player.extend(Being);
 Player.prototype.act = function() {
 	Game.engine.lock();
 
+	var visible = [];
+
 	this._computeFOV(function(x, y, r, vis) {
 		var xy = new XY(x, y);
+		visible.push(xy);
 		Game.exploreAt(xy);
 	});
+
+	visible.push(this._xy);
+
+	Game.setVisible(visible);
 
 	window.addEventListener("keydown", this);
 };

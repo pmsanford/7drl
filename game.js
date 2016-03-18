@@ -7,6 +7,7 @@ var Game = {
 	textBuffer: null,
 	pdisplay: null,
 	sheet: null,
+	visList: [],
 	
 	init: function() {
 		window.addEventListener("load", this);
@@ -40,10 +41,26 @@ var Game = {
 		this.engine.start();
 	},
 
-	draw: function(xy) {
-		var entity = this.level.getEntityAt(xy);
+	draw: function(xy, visible) {
+		if (visible === undefined) {
+			visible = this.visList.find(function(z) { z.is(xy); }) !== undefined;
+		}
+		var entity = this.level.getEntityAt(xy, visible);
 		var visual = entity.getVisual();
 		this.pdisplay.set(xy.x, xy.y, visual.ch, visual.fg, visual.bg);
+	},
+
+	drawMany: function(xyList, visible) {
+		for (var i = 0; i < xyList.length; i++) {
+			Game.draw(xyList[i], visible);
+		}
+	},
+
+	setVisible: function(visList) {
+		var prevVisList = this.visList;
+		this.visList = visList;
+		Game.drawMany(prevVisList, false);
+		Game.drawMany(this.visList, true);
 	},
 	
 	over: function() {

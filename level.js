@@ -121,8 +121,12 @@ Level.prototype.getMapFeatureAt = function(xy) {
 	return this._map[xy];
 }
 
-Level.prototype.getEntityAt = function(xy) {
-	return this._beings[xy] || this._items[xy] || this._map[xy] || this._empty;
+Level.prototype.getEntityAt = function(xy, visible) {
+	if (visible && this._beings[xy]) {
+		return this._beings[xy];
+	} else {
+		return this._items[xy] || this._map[xy] || this._empty;
+	}
 };
 
 Level.prototype.getBeings = function() {
