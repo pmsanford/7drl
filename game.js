@@ -48,6 +48,11 @@ var Game = {
 		var entity = this.level.getEntityAt(xy, visible);
 		var visual = entity.getVisual();
 		this.pdisplay.set(xy.x, xy.y, visual.ch, visual.fg, visual.bg);
+		if (visible) {
+			this.pdisplay.clearOverlay(xy);
+		} else {
+			this.pdisplay.setOverlay(xy.x, xy.y, '&', '#000');
+		}
 	},
 
 	drawMany: function(xyList, visible) {

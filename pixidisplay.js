@@ -8,6 +8,7 @@ var PixiDisplay = function(parent, spritesheet) {
     this.sheet = spritesheet;
     this.scale = 1;
     this.sprites = {};
+    this.overlaySprites = {};
     renderer = new PIXI.autoDetectRenderer(this._to_x(80), this._to_y(28), {"antialias": false});
     parent.appendChild(renderer.view);
 };
@@ -38,6 +39,10 @@ PixiDisplay.prototype.set = function(x, y, ch, fg, bg) {
 
 PixiDisplay.prototype.setOverlay = function(x, y, ch, fg) {
   var xy = this._get_key(x, y);
+  if (this.overlaySprites[xy]) {
+    this.overlay.removeChild(this.overlaySprites[xy]);
+    delete this.overlaySprites[xy];
+  }
   var spid = this._get_id(ch);
   var oltex = this.sheet.GetTexture(spid);
   var spr = new PIXI.Sprite(oltex);
@@ -50,10 +55,17 @@ PixiDisplay.prototype.setOverlay = function(x, y, ch, fg) {
   spr.position.x = this._to_x(x);
   spr.position.y = this._to_y(y);
   this.overlay.addChild(spr);
+  this.overlaySprites[xy] = spr;
 };
 
-PixiDisplay.prototype.clearOverlay = function() {
-  this.overlay.removeChildren();
+PixiDisplay.prototype.clearOverlay = function(xy) {
+  if (xy === undefined) {
+    this.overlay.removeChildren();
+    this.overlaySprites = {};
+  } else if (this.overlaySprites[xy]) {
+    this.overlay.removeChild(this.overlaySprites[xy]);
+    delete this.overlaySprites[xy];
+  }
 }
 
 PixiDisplay.prototype._parseHexStr = function(hex) {
