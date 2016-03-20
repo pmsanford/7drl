@@ -87,6 +87,19 @@ var Game = {
 		return this.level.getItemAt(xy);
 	},
 
+	ascendAt: function(xy) {
+		var stairway = this.level.getMapFeatureAt(xy);
+		if (!(stairway instanceof Stairway)) {
+			Game.textBuffer.write("No down staircase here.");
+			Game.textBuffer.flush();
+			return false;
+		}
+		var newDepth = stairway.link.getLevel().depth;
+		this._switchLevel(this.levels[newDepth]);
+		this.level.setBeing(this.player, stairway.link.getXY());
+		return true;
+	},
+
 	isBlocked: function(xy) {
 		var size = this.level.getSize();
 		return this.level.isBlocked(xy) || xy.x >= size.x || xy.y >= size.y;

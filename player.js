@@ -119,41 +119,46 @@ Player.prototype._handleKey = function(code, shift) {
 		}
 		return true;
 	}
-	if (code == ROT.VK_COMMA) {
-		var item = Game.getItem(this._xy);
-		if (item !== null) {
-			this._inventory.push(item);
-			Game.textBuffer.write("Picked up a " + item.name + ".");
-			acted = true;
-		} else {
-			Game.textBuffer.write("There's nothing to pick up.");
+	if (!shift) {
+		if (code == ROT.VK_COMMA) {
+			var item = Game.getItem(this._xy);
+			if (item !== null) {
+				this._inventory.push(item);
+				Game.textBuffer.write("Picked up a " + item.name + ".");
+				acted = true;
+			} else {
+				Game.textBuffer.write("There's nothing to pick up.");
+			}
+			Game.textBuffer.flush();
 		}
-		Game.textBuffer.flush();
-	}
-	if (code == ROT.VK_O) {
-		Game.textBuffer.write("What direction? ");
-		Game.textBuffer.flush();
-		this._keyHandler = this._manipulateDoor.bind(this, Game.openDoorAt);
-	}
-	if (code == ROT.VK_C) {
-		Game.textBuffer.write("What direction? ");
-		Game.textBuffer.flush();
-		this._keyHandler = this._manipulateDoor.bind(this, Game.closeDoorAt);
-	}
-	if (code == ROT.VK_I) {
-		Game.textBuffer.write("Inventory: ");
-		this._showInventory();
-		Game.textBuffer.flush();
-	}
-	if (code == ROT.VK_W) {
-		Game.textBuffer.write("What do you want to wield? ");
-		this._showInventory();
-		Game.textBuffer.flush();
-		this._keyHandler = this._wieldWeapon.bind(this);
-	}
-	if (code == ROT.VK_PERIOD && shift) {
-		Game.descendAt(this.getXY());
-		acted = true;
+		if (code == ROT.VK_O) {
+			Game.textBuffer.write("What direction? ");
+			Game.textBuffer.flush();
+			this._keyHandler = this._manipulateDoor.bind(this, Game.openDoorAt);
+		}
+		if (code == ROT.VK_C) {
+			Game.textBuffer.write("What direction? ");
+			Game.textBuffer.flush();
+			this._keyHandler = this._manipulateDoor.bind(this, Game.closeDoorAt);
+		}
+		if (code == ROT.VK_I) {
+			Game.textBuffer.write("Inventory: ");
+			this._showInventory();
+			Game.textBuffer.flush();
+		}
+		if (code == ROT.VK_W) {
+			Game.textBuffer.write("What do you want to wield? ");
+			this._showInventory();
+			Game.textBuffer.flush();
+			this._keyHandler = this._wieldWeapon.bind(this);
+		}
+	} else {
+		if (code == ROT.VK_PERIOD) { // >
+			acted = Game.descendAt(this.getXY());
+		}
+		if (code == ROT.VK_COMMA) { // <
+			acted = Game.ascendAt(this.getXY());
+		}
 	}
 
 	return acted; /* unknown key */
