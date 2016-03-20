@@ -1,8 +1,8 @@
-var Monster = function(visual) {
+var Monster = function(visual, name, damage) {
 	Being.call(this, visual);
 	this._path = null;
-	this.name = "goblin";
-	this._damage = 3;
+	this.name = name || "goblin";
+	this._damage = damage || 3;
 }
 Monster.extend(Being);
 

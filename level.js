@@ -39,7 +39,24 @@ Level.generateLevel = function() {
 		rooms[i].getDoors(doorCallback);
 	}
 
+	level._placeMonsters();
+
 	return level;
+};
+
+Level.prototype._placeMonsters = function() {
+	var randint = function(max) {
+		return Math.ceil(ROT.RNG.getUniform() * max);
+	};
+	var number = randint(5);
+	var mg = new MonsterGenerator();
+
+	for (var i = 0; i < number; i++) {
+		var monster = mg.getRandomMonster();
+		var xy = new XY(randint(this._size.x), randint(this._size.y));
+		var xy = this.findEmptySpace(xy);
+		this.setBeing(monster, xy);
+	}
 };
 
 Level.prototype._createWalls = function() {
@@ -98,36 +115,47 @@ Level.prototype.findEmptySpace = function(startAt) {
 
 	var xy = startAt;
 
-	var state = 0;
+	var isempty = (function(x, y) {
+		var exy = new XY(x,y);
+		if (this._beings[exy]) {
+			return false;
+		};
 
-	while (this._beings[xy] || this._map[xy] == undefined || (this._map[xy] && !this._map[xy].isEmptySpace())) {
-		var loc = state % 8;
-		switch (loc) {
-			case 0:
-			case 6:
-			case 7:
-				xy.x -= 1;
-				break;
-			case 1:
-				xy.y -= 1;
-			case 2:
-			case 3:
-				xy.x += 1;
-				break;
-			case 4:
-			case 5:
-				xy.y += 1;
-				break;
-		}
-		state++;
-		if (state > 1000) {
-			if (console && console.log) {
-				console.log('Runaway attempt to find empty space.');
+		if (this._map[exy]) {
+			if (this._map[exy].isEmptySpace()) {
+				return true;
 			}
+		}
+		return false;
+	}).bind(this);
+
+	if (isempty(xy.x, xy.y)) {
+		return xy;
+	}
+
+	var callback = function(x, y) {
+		return true;
+	};
+
+	var fov = new ROT.FOV.PreciseShadowcasting(callback);
+
+	var radius = 1;
+	var emptySpace = null;
+	do {
+		if (radius > this._size.x && radius > this._size.y) {
+			console.log("Unable to find empty space.");
 			return undefined;
 		}
-	}
-	return xy;
+		fov.compute(xy.x, xy.y, radius, function(x, y, r, v) {
+			if (isempty(x, y)) {
+				emptySpace = new XY(x, y);
+			}
+		});
+		if (emptySpace !== null) {
+			return emptySpace;
+		}
+		radius++;
+	} while (true);
 };
 
 Level.prototype.setItem = function(entity, xy) {
