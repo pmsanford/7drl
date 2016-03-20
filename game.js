@@ -35,7 +35,8 @@ var Game = {
 		var level = Level.generateLevel();
 		var size = level.getSize();
 		this._switchLevel(level);
-		this.level.setBeing(this.player, new XY(Math.round(size.x/2), Math.round(size.y/2)));
+		var pxy = this.level.findEmptySpace();
+		this.level.setBeing(this.player, pxy);
 		
 		this.pdisplay.draw();
 		this.engine.start();

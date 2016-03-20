@@ -1,6 +1,8 @@
 var XY = function(x, y) {
 	this.x = x || 0;
 	this.y = y || 0;
+	this.x = Math.floor(this.x);
+	this.y = Math.floor(this.y);
 }
 
 XY.prototype.toString = function() {

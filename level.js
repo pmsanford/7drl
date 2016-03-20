@@ -17,7 +17,7 @@ Level.generateLevel = function() {
 	var callback = function(x, y, what) {
 		var xy = new XY(x, y);
 		if (what === 0) {
-			var floor = new MapFeature({ch: ".", fg: "#888"}, false);
+			var floor = new MapFeature({ch: ".", fg: "#888"}, false, true);
 			level.setMap(floor, xy);
 		}
 	}
@@ -89,6 +89,45 @@ Level.prototype._setEntity = function(entity, xy, list) {
 	if (Game.level == this) { 
 		Game.draw(xy);
 	}
+};
+
+Level.prototype.findEmptySpace = function(startAt) {
+	if (startAt === undefined) {
+		startAt = new XY(this._size.x/2, this._size.y/2);
+	}
+
+	var xy = startAt;
+
+	var state = 0;
+
+	while (this._beings[xy] || this._map[xy] == undefined || (this._map[xy] && !this._map[xy].isEmptySpace())) {
+		var loc = state % 8;
+		switch (loc) {
+			case 0:
+			case 6:
+			case 7:
+				xy.x -= 1;
+				break;
+			case 1:
+				xy.y -= 1;
+			case 2:
+			case 3:
+				xy.x += 1;
+				break;
+			case 4:
+			case 5:
+				xy.y += 1;
+				break;
+		}
+		state++;
+		if (state > 1000) {
+			if (console && console.log) {
+				console.log('Runaway attempt to find empty space.');
+			}
+			return undefined;
+		}
+	}
+	return xy;
 };
 
 Level.prototype.setItem = function(entity, xy) {
