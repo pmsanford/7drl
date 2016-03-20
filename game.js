@@ -164,9 +164,4 @@ var Game = {
 	}
 }
 
-function randint(min, max) {
-	max++;
-	return Math.ceil(ROT.RNG.getUniform() * max) - 1 + min;
-}
-
 Game.init();

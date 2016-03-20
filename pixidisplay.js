@@ -150,6 +150,9 @@ PixiDisplay.prototype._get_id = function(chr) {
   if (chr == '>') {
     return 62;
   }
+  if (chr == '<') {
+    return 60;
+  }
   return 0;
 };
 

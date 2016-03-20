@@ -1,6 +1,8 @@
-var Level = function() {
+var Level = function(depth) {
 	/* FIXME data structure for storing entities */
 	this._beings = {};
+
+	this._depth = depth || 1;
 
 	/* FIXME map data */
 	this._size = new XY(80, 25);
@@ -9,10 +11,11 @@ var Level = function() {
 	this._empty = new MapFeature({ch:" ", fg:"#fff", bg:null}, true);
 
 	this._items = {};
+	this._downStairways = [];
 };
 
-Level.generateLevel = function() {
-	var level = new Level();
+Level.generateLevel = function(depth, staircaseLocations) {
+	var level = new Level(depth);
 
 	var callback = function(x, y, what) {
 		var xy = new XY(x, y);
@@ -33,12 +36,14 @@ Level.generateLevel = function() {
 	map.create(callback);
 
 	level._createWalls();
-	level._placeDownStairways();
 
 	var rooms = map.getRooms();
 	for (var i = 0; i < rooms.length; i++) {
 		rooms[i].getDoors(doorCallback);
 	}
+
+	level._placeUpStairways(staircaseLocations);
+	level._placeDownStairways();
 
 	level._placeMonsters();
 
@@ -55,23 +60,42 @@ Level.prototype._placeMonsters = function() {
 	this._randomlyPlace(0, 5, cb);
 };
 
+Level.prototype._placeUpStairways = function(downStairways) {
+	if (!downStairways || !(downStairways instanceof Array)) {
+		return;
+	}
+	for (var i = 0; i < downStairways.length; i++) {
+		var loc = downStairways[i].getXY();
+		var xy = this.findEmptySpace(loc);
+		var stairway = new Stairway("up");
+		stairway.linkTo(downStairways[i]);
+		this.setMap(stairway, xy);
+	}
+};
+
 Level.prototype._placeDownStairways = function() {
 	var cb = (function(xy) {
-		this.setMap(new Stairway("down"), xy);
+		var stairway = new Stairway("down");
+		this.setMap(stairway, xy);
+		this._downStairways.push(stairway);
 	}).bind(this);
 
-	this._randomlyPlace(0, 3, cb);
+	this._randomlyPlace(1, 3, cb);
 };
 
 Level.prototype._randomlyPlace = function(min, max, cb) {
-	var number = randint(min, max);
+	var number = ROT.RNG.getUniformInt(min, max);
 
 	for (var i = 0; i < number; i++) {
-		var xy = new XY(randint(0, this._size.x), randint(0, this._size.y));
+		var xy = new XY(ROT.RNG.getUniformInt(0, this._size.x), ROT.RNG.getUniformInt(0, this._size.y));
 		xy = this.findEmptySpace(xy);
 		cb(xy);
 	}
 };
+
+Level.prototype.getDownStairways = function() {
+	return this._downStairways();
+}
 
 Level.prototype._createWalls = function() {
 	var keys = Object.keys(this._map);
