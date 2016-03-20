@@ -36,6 +36,9 @@ var Game = {
 		var size = level.getSize();
 		this._switchLevel(level);
 		var pxy = this.level.findEmptySpace();
+		var sword = Weapon.createSword();
+		var loc = this.player.addItem(sword);
+		this.player.forceWield(loc);
 		this.level.setBeing(this.player, pxy);
 		
 		this.pdisplay.draw();

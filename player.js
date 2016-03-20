@@ -200,3 +200,15 @@ Player.prototype._showInventory = function() {
 		Game.textBuffer.write(String.fromCharCode(i + 97) + ". " + this._inventory[i].name + (this._wielded == this._inventory[i] ? "(w)" : "") + ";");
 	}
 };
+
+Player.prototype.addItem = function(item) {
+	var loc = this._inventory.push(item);
+	return String.fromCharCode(loc - 1 + 65);
+};
+
+Player.prototype.forceWield = function(loc) {
+	var idx = loc.charCodeAt(0) - 65;
+	if (this._inventory[idx]) {
+		this._wielded = this._inventory[idx];
+	}
+}
