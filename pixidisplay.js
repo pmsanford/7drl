@@ -147,6 +147,9 @@ PixiDisplay.prototype._get_id = function(chr) {
   if (chr == '/') {
     return 47;
   }
+  if (chr == '>') {
+    return 62;
+  }
   return 0;
 };
 

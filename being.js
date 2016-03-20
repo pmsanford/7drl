@@ -20,7 +20,6 @@ Being.prototype.damage = function(damage) {
 }
 
 Being.prototype.act = function() {
-	/* FIXME */
 }
 
 Being.prototype.die = function() {

@@ -33,6 +33,7 @@ Level.generateLevel = function() {
 	map.create(callback);
 
 	level._createWalls();
+	level._placeDownStairways();
 
 	var rooms = map.getRooms();
 	for (var i = 0; i < rooms.length; i++) {
@@ -45,17 +46,30 @@ Level.generateLevel = function() {
 };
 
 Level.prototype._placeMonsters = function() {
-	var randint = function(max) {
-		return Math.ceil(ROT.RNG.getUniform() * max);
-	};
-	var number = randint(5);
 	var mg = new MonsterGenerator();
+	var cb = (function(mg, xy) {
+		var monster = mg.getRandomMonster();
+		this.setBeing(monster, xy);
+	}).bind(this, mg);
+
+	this._randomlyPlace(0, 5, cb);
+};
+
+Level.prototype._placeDownStairways = function() {
+	var cb = (function(xy) {
+		this.setMap(new Stairway("down"), xy);
+	}).bind(this);
+
+	this._randomlyPlace(0, 3, cb);
+};
+
+Level.prototype._randomlyPlace = function(min, max, cb) {
+	var number = randint(min, max);
 
 	for (var i = 0; i < number; i++) {
-		var monster = mg.getRandomMonster();
-		var xy = new XY(randint(this._size.x), randint(this._size.y));
-		var xy = this.findEmptySpace(xy);
-		this.setBeing(monster, xy);
+		var xy = new XY(randint(0, this._size.x), randint(0, this._size.y));
+		xy = this.findEmptySpace(xy);
+		cb(xy);
 	}
 };
 
