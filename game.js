@@ -8,6 +8,7 @@ var Game = {
 	pdisplay: null,
 	sheet: null,
 	visList: [],
+	levels: {},
 	
 	init: function() {
 		window.addEventListener("load", this);
@@ -34,6 +35,7 @@ var Game = {
 		/* FIXME build a level and position a player */
 		var level = Level.generateLevel();
 		var size = level.getSize();
+		this.levels[level.depth] = level;
 		this._switchLevel(level);
 		var pxy = this.level.findEmptySpace();
 		var sword = Weapon.createSword();
@@ -103,6 +105,23 @@ var Game = {
 		if (feature && feature.explore()) {
 			Game.draw(xy);
 		}
+	},
+
+	descendAt: function(xy) {
+		var stairway = this.level.getMapFeatureAt(xy);
+		if (!(stairway instanceof Stairway)) {
+			Game.textBuffer.write("No down staircase here.");
+			Game.textBuffer.flush();
+			return false;
+		}
+		var newDepth = this.level.depth + 1;
+		if (!this.levels[newDepth]) {
+			var newLevel = Level.generateLevel(newDepth, this.level.getDownStairways());
+			this.levels[newDepth] = newLevel;
+		}
+		this._switchLevel(this.levels[newDepth]);
+		this.level.setBeing(this.player, stairway.link.getXY());
+		return true;
 	},
 
 	_getDoor: function(xy) {

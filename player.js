@@ -65,7 +65,7 @@ Player.prototype.die = function() {
 Player.prototype.handleEvent = function(e) {
 	var code = e.keyCode;
 
-	var keyHandled = this._handleKey(e.keyCode);
+	var keyHandled = this._handleKey(e.keyCode, e.getModifierState("Shift"));
 
 	if (keyHandled) {
 		window.removeEventListener("keydown", this);
@@ -90,12 +90,12 @@ Player.prototype._getDirectionFromKeycode = function(code) {
 	return this._dirKeys[code];
 };
 
-Player.prototype._handleKey = function(code) {
+Player.prototype._handleKey = function(code, shift) {
 	var acted = false;
 	if (this._keyHandler) {
 		return this._keyHandler(code);
 	}
-	if (code in this._dirKeys) {
+	if (code in this._dirKeys && !shift) {
 		var direction = this._getDirectionFromKeycode(code);
 		if (direction == -1) { /* noop */
 			/* FIXME show something? */
@@ -150,6 +150,10 @@ Player.prototype._handleKey = function(code) {
 		this._showInventory();
 		Game.textBuffer.flush();
 		this._keyHandler = this._wieldWeapon.bind(this);
+	}
+	if (code == ROT.VK_PERIOD && shift) {
+		Game.descendAt(this.getXY());
+		acted = true;
 	}
 
 	return acted; /* unknown key */

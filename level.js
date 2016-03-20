@@ -2,7 +2,7 @@ var Level = function(depth) {
 	/* FIXME data structure for storing entities */
 	this._beings = {};
 
-	this._depth = depth || 1;
+	this.depth = depth || 1;
 
 	/* FIXME map data */
 	this._size = new XY(80, 25);
@@ -95,7 +95,7 @@ Level.prototype._randomlyPlace = function(min, max, cb) {
 
 Level.prototype.getDownStairways = function() {
 	return this._downStairways();
-}
+};
 
 Level.prototype._createWalls = function() {
 	var keys = Object.keys(this._map);
@@ -115,6 +115,10 @@ Level.prototype._createWalls = function() {
 
 Level.prototype.getSize = function() {
 	return this._size;
+};
+
+Level.prototype.getDownStairways = function() {
+	return this._downStairways;
 };
 
 Level.prototype.removeBeing = function(being) {
